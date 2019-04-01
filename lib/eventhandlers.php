@@ -4,7 +4,9 @@
  * Date: 08.02.2018
  */
 
-namespace Itua\Tauth;
+
+namespace RG\Tauth;
+
 
 class EventHandlers
 {
@@ -15,7 +17,7 @@ class EventHandlers
     {
         $auth_item = [
             'ID' => Main::AUTH_SERVICE_ID,
-            'CLASS' => '\\Itua\\Tauth\\AuthService',
+            'CLASS' => '\\RG\\Tauth\\AuthService',
             'NAME' => 'Telegram',
             'ICON' => 'openid',
         ];

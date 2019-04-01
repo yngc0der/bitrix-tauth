@@ -4,9 +4,14 @@
  * Date: 08.02.2018
  */
 
-namespace Itua\Tauth;
 
-\Bitrix\Main\Localization\Loc::loadMessages(__FILE__);
+namespace RG\Tauth;
+
+
+use Bitrix\Main\Localization\Loc;
+
+
+Loc::loadMessages(__FILE__);
 
 class AuthService extends \CSocServAuth
 {
@@ -25,7 +30,7 @@ class AuthService extends \CSocServAuth
         $settings = [
             [
                 'bot_username',
-                \Bitrix\Main\Localization\Loc::getMessage('ITUA_TAUTH_BOT_USERNAME'),
+                Loc::getMessage('RG_TAUTH_BOT_USERNAME'),
                 '',
                 [
                     'text',
@@ -34,7 +39,7 @@ class AuthService extends \CSocServAuth
             ],
             [
                 'bot_token',
-                \Bitrix\Main\Localization\Loc::getMessage('ITUA_TAUTH_BOT_TOKEN'),
+                Loc::getMessage('RG_TAUTH_BOT_TOKEN'),
                 '',
                 [
                     'text',

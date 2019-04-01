@@ -4,7 +4,9 @@
  * Date: 08.02.2018
  */
 
-use \Bitrix\Main\Localization\Loc;
+
+use Bitrix\Main\Localization\Loc;
+
 
 if (!check_bitrix_sessid()) {
     return false;

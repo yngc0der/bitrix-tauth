@@ -4,10 +4,12 @@
  * Date: 08.02.2018
  */
 
-namespace Itua\Tauth;
+
+namespace RG\Tauth;
+
 
 class Main
 {
-    const MODULE_ID = 'itua.tauth';
+    const MODULE_ID = 'rg.tauth';
     const AUTH_SERVICE_ID = 'tg';
 }

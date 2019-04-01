@@ -4,26 +4,28 @@
  * Date: 08.02.2018
  */
 
-use \Bitrix\Main,
-    \Bitrix\Main\Localization\Loc;
+
+use Bitrix\Main;
+use Bitrix\Main\Localization\Loc;
+
 
 Loc::loadMessages(__FILE__);
 
-class itua_tauth extends \CModule
+class rg_tauth extends \CModule
 {
 	function __construct()
 	{
 		$arModuleVersion = [];
 		include(__DIR__ . '/version.php');
 
-		$this->MODULE_ID = 'itua.tauth';
+		$this->MODULE_ID = 'rg.tauth';
 		$this->MODULE_VERSION = $arModuleVersion['VERSION'];
 		$this->MODULE_VERSION_DATE = $arModuleVersion['VERSION_DATE'];
-		$this->MODULE_NAME = Loc::getMessage('ITUA_MODULE_NAME');
-		$this->MODULE_DESCRIPTION = Loc::getMessage('ITUA_MODULE_DESC');
+		$this->MODULE_NAME = Loc::getMessage('RG_MODULE_NAME');
+		$this->MODULE_DESCRIPTION = Loc::getMessage('RG_MODULE_DESC');
 
-		$this->PARTNER_NAME = Loc::getMessage('ITUA_PARTNER_NAME');
-		$this->PARTNER_URI = Loc::getMessage('ITUA_PARTNER_URI');
+		$this->PARTNER_NAME = Loc::getMessage('RG_PARTNER_NAME');
+		$this->PARTNER_URI = Loc::getMessage('RG_PARTNER_URI');
 	}
 
     function InstallEvents()
@@ -32,7 +34,7 @@ class itua_tauth extends \CModule
             'socialservices',
             'OnAuthServicesBuildList',
             $this->MODULE_ID,
-            '\\Itua\\Tauth\\EventHandlers',
+            '\\RG\\Tauth\\EventHandlers',
             'onAuthServicesBuildList'
         );
     }
@@ -42,7 +44,7 @@ class itua_tauth extends \CModule
             'socialservices',
             'OnAuthServicesBuildList',
             $this->MODULE_ID,
-            '\\Itua\\Tauth\\EventHandlers',
+            '\\RG\\Tauth\\EventHandlers',
             'onAuthServicesBuildList'
         );
     }
@@ -54,10 +56,10 @@ class itua_tauth extends \CModule
 			Main\ModuleManager::registerModule($this->MODULE_ID);
 			$this->InstallEvents();
 		} else {
-		    throw new Main\LoaderException(Loc::getMessage('ITUA_INSTALL_ERROR_NOT_D7'));
+		    throw new Main\LoaderException(Loc::getMessage('RG_INSTALL_ERROR_NOT_D7'));
         }
 
-		$APPLICATION->IncludeAdminFile(Loc::getMessage('ITUA_INSTALL_TITLE'), $this->GetPath() . '/install/step.php');
+		$APPLICATION->IncludeAdminFile(Loc::getMessage('RG_INSTALL_TITLE'), $this->GetPath() . '/install/step.php');
 	}
 
 	function DoUninstall()
@@ -72,7 +74,7 @@ class itua_tauth extends \CModule
 		    Main\Config\Option::delete($this->MODULE_ID);
 			Main\ModuleManager::unRegisterModule($this->MODULE_ID);
 		} else {
-		    $APPLICATION->IncludeAdminFile(Loc::getMessage('ITUA_UNINSTALL_TITLE'), $this->GetPath() . '/install/unstep.php');
+		    $APPLICATION->IncludeAdminFile(Loc::getMessage('RG_UNINSTALL_TITLE'), $this->GetPath() . '/install/unstep.php');
         }
 	}
 
@@ -84,7 +86,7 @@ class itua_tauth extends \CModule
 	function GetPath($notDocumentRoot = false)
 	{
 		if ($notDocumentRoot) {
-		    return str_ireplace(Main\Application::getDocumentRoot(),'', dirname(__DIR__));
+		    return str_ireplace(Main\Application::getDocumentRoot(), '', dirname(__DIR__));
         } else {
 		    return dirname(__DIR__);
         }
