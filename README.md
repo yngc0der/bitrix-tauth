@@ -4,7 +4,7 @@
 
 Выполняем:
 ```
-composer require worksolutions/bitrix-reduce-migrations
+composer require protopgamer/bitrix-tauth
 ```
 и
 ```
