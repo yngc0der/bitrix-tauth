@@ -14,7 +14,7 @@ define('CHK_EVENT', true);
 require($_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_before.php');
 require(__DIR__ . '/../install/index.php');
 
-$module = new rg_tauth();
+$module = new yngc0der_tauth();
 $module->DoInstall();
 
 echo 'ok';

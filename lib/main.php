@@ -5,11 +5,11 @@
  */
 
 
-namespace RG\Tauth;
+namespace Yngc0der\Tauth;
 
 
 class Main
 {
-    const MODULE_ID = 'rg.tauth';
+    const MODULE_ID = 'yngc0der.tauth';
     const AUTH_SERVICE_ID = 'tg';
 }

@@ -1,12 +1,9 @@
 {
-    "name": "protopgamer/bitrix-tauth",
+    "name": "yngc0der/bitrix-tauth",
     "type": "bitrix-d7-module",
     "license": "MIT",
     "description": "Telegram auth module",
     "extra": {
-        "installer-paths": {
-            "{$bitrix_dir}/modules/{$name}/": ["vendor:rg"]
-        },
         "installer-name": "tauth"
     },
     "require": {

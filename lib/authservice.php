@@ -5,7 +5,7 @@
  */
 
 
-namespace RG\Tauth;
+namespace Yngc0der\Tauth;
 
 
 use Bitrix\Main\Localization\Loc;

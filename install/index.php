@@ -11,14 +11,14 @@ use Bitrix\Main\Localization\Loc;
 
 Loc::loadMessages(__FILE__);
 
-class rg_tauth extends \CModule
+class yngc0der_tauth extends \CModule
 {
 	function __construct()
 	{
 		$arModuleVersion = [];
 		include(__DIR__ . '/version.php');
 
-		$this->MODULE_ID = 'rg.tauth';
+		$this->MODULE_ID = 'yngc0der.tauth';
 		$this->MODULE_VERSION = $arModuleVersion['VERSION'];
 		$this->MODULE_VERSION_DATE = $arModuleVersion['VERSION_DATE'];
 		$this->MODULE_NAME = Loc::getMessage('RG_MODULE_NAME');

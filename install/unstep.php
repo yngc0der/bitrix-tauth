@@ -16,7 +16,7 @@ if (!check_bitrix_sessid()) {
 <form action="<?= $APPLICATION->GetCurPage(); ?>">
 	<?= bitrix_sessid_post(); ?>
 	<input type="hidden" name="lang" value="<?= LANGUAGE_ID; ?>">
-	<input type="hidden" name="id" value="itua.tauth">
+	<input type="hidden" name="id" value="yngc0der.tauth">
 	<input type="hidden" name="uninstall" value="Y">
 	<input type="submit" name="" value="<?= Loc::getMessage('MOD_UNINST_DEL'); ?>">
 </form>

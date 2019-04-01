@@ -5,7 +5,7 @@
  */
 
 
-namespace RG\Tauth;
+namespace Yngc0der\Tauth;
 
 
 class EventHandlers
@@ -17,7 +17,7 @@ class EventHandlers
     {
         $auth_item = [
             'ID' => Main::AUTH_SERVICE_ID,
-            'CLASS' => '\\RG\\Tauth\\AuthService',
+            'CLASS' => '\\Yngc0der\\Tauth\\AuthService',
             'NAME' => 'Telegram',
             'ICON' => 'openid',
         ];
