@@ -34,7 +34,7 @@ class yngc0der_tauth extends \CModule
             'socialservices',
             'OnAuthServicesBuildList',
             $this->MODULE_ID,
-            '\\RG\\Tauth\\EventHandlers',
+            '\\Yngc0der\\Tauth\\EventHandlers',
             'onAuthServicesBuildList'
         );
     }
@@ -44,7 +44,7 @@ class yngc0der_tauth extends \CModule
             'socialservices',
             'OnAuthServicesBuildList',
             $this->MODULE_ID,
-            '\\RG\\Tauth\\EventHandlers',
+            '\\Yngc0der\\Tauth\\EventHandlers',
             'onAuthServicesBuildList'
         );
     }
