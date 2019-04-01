@@ -3,7 +3,6 @@
     "type": "bitrix-d7-module",
     "license": "MIT",
     "description": "Telegram auth module",
-    "version": "1.0.0",
     "extra": {
         "installer-name": "rg.tauth"
     },
