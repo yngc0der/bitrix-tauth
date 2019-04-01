@@ -4,13 +4,21 @@
 
 Выполняем:
 ```
-composer require protopgamer/bitrix-tauth
+composer require yngc0der/bitrix-tauth
 ```
 и
 ```
-composer run-script post-install-cmd -d bitrix/modules/rg.tauth
+composer run-script post-install-cmd -d bitrix/modules/yngc0der.tauth
 ```
 
 В результате получим:
-1. файлы модуля загружены в директорию ``bitrix/modules/rg.tauth``
+1. файлы модуля загружены в директорию ``bitrix/modules/yngc0der.tauth``
 2. модуль зарегистрирован в системе
+3. установлены необходимые обработчики событий
+
+# Настройка
+1. заходим в настройки модуля "Социальные сервисы" (раздел "Внешние сервисы")
+2. ставим галочку возле "Telegram"
+3. листаем вниз, ищем настройки сервиса ("Настройки Telegram")
+4. вводим имя бота и токен, полученный при его регистрации
+5. после сохранения в дефолтном компоненте авторизации появится возможность авторизоваться через телеграм
