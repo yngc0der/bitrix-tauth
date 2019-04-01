@@ -4,6 +4,7 @@
     "license": "MIT",
     "description": "Telegram auth module",
     "extra": {
+        "installer-paths": ["vendor:protopgamer"],
         "installer-name": "rg.tauth"
     },
     "require": {
