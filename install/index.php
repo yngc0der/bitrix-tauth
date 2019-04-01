@@ -49,7 +49,7 @@ class yngc0der_tauth extends \CModule
         );
     }
 
-	function DoInstall()
+	function DoInstall($cli_mode = false)
 	{
 		global $APPLICATION;
 		if ($this->isVersionD7()) {
@@ -57,9 +57,10 @@ class yngc0der_tauth extends \CModule
 			$this->InstallEvents();
 		} else {
 		    throw new Main\LoaderException(Loc::getMessage('RG_INSTALL_ERROR_NOT_D7'));
-        }
-
-		$APPLICATION->IncludeAdminFile(Loc::getMessage('RG_INSTALL_TITLE'), $this->GetPath() . '/install/step.php');
+        	}
+		if (!$cli_mode) {
+			$APPLICATION->IncludeAdminFile(Loc::getMessage('RG_INSTALL_TITLE'), $this->GetPath() . '/install/step.php');
+		}
 	}
 
 	function DoUninstall()
