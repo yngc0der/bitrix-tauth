@@ -5,6 +5,6 @@
  */
 
 $arModuleVersion = [
-	'VERSION' => '1.3.0',
+	'VERSION' => '1.2.1',
 	'VERSION_DATE' => '2019-04-01 02:00:00'
 ];
