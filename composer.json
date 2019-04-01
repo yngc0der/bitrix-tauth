@@ -5,9 +5,9 @@
     "description": "Telegram auth module",
     "extra": {
         "installer-paths": {
-            "{$bitrix_dir}/modules/{$name}/": ["vendor:protopgamer"]
+            "{$bitrix_dir}/modules/{$name}/": ["vendor:rg"]
         },
-        "installer-name": "rg.tauth"
+        "installer-name": "tauth"
     },
     "require": {
         "php": ">=5.3.0",
