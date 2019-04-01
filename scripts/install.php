@@ -15,6 +15,6 @@ require($_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_before.
 require(__DIR__ . '/../install/index.php');
 
 $module = new yngc0der_tauth();
-$module->DoInstall();
+$module->DoInstall(true);
 
 echo 'ok';
