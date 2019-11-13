@@ -4,7 +4,7 @@
 
 Выполняем:
 ```
-composer require yngc0der/bitrix-tauth
+composer require yngc0der/bitrix-tauth:dev-master
 ```
 и
 ```
