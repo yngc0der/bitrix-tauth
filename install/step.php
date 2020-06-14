@@ -1,37 +1,24 @@
 <?php
-/**
- * Created by RG.
- * Date: 08.02.2018
- */
-
 
 use Bitrix\Main\Localization\Loc;
-
+use Bitrix\Main\Context;
 
 if (!check_bitrix_sessid()) {
     return false;
 }
 
+/** @global CMain $APPLICATION */
 global $APPLICATION;
+
+$message = new CAdminMessage('');
+
 if ($ex = $APPLICATION->GetException()) {
-    $mess = new \CAdminMessage([
-        'TYPE' => 'ERROR',
-        'MESSAGE' => Loc::getMessage('MOD_INST_ERR'),
-        'DETAILS' => $ex->GetString(),
-        'HTML' => true,
-    ]);
-    echo $mess->show();
+    $message->ShowMessage(Loc::getMessage('MOD_INST_ERR'));
 } else {
-    $mess = new \CAdminMessage([
-        'TYPE' => 'OK',
-        'MESSAGE' => Loc::getMessage('MOD_INST_OK'),
-    ]);
-    echo $mess->show();
+    $message->ShowNote(Loc::getMessage('MOD_INST_OK'));
 }
-
 ?>
-
-<form action="<?= $APPLICATION->GetCurPage() ?>">
-	<input type="hidden" name="lang" value="<?= LANGUAGE_ID ?>">
-	<input type="submit" name="" value="<?= Loc::getMessage('MOD_BACK') ?>">
+<form action="<?= Context::getCurrent()->getRequest()->getRequestedPage(); ?>">
+    <input type="hidden" name="lang" value="<?= Context::getCurrent()->getLanguage(); ?>">
+    <input type="submit" name="" value="<?= Loc::getMessage('MOD_BACK'); ?>">
 </form>

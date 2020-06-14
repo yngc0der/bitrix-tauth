@@ -1,147 +1,197 @@
 <?php
-/**
- * Created by RG.
- * Date: 08.02.2018
- */
-
 
 namespace Yngc0der\Tauth;
 
-
 use Bitrix\Main\Localization\Loc;
-
+use Bitrix\Main\Context;
+use Bitrix\Main\Web;
+use Bitrix\Main\AccessDeniedException;
+use Bitrix\Main\SystemException;
+use CSocServAuth;
+use CSocServUtil;
+use CSocServAuthManager;
 
 Loc::loadMessages(__FILE__);
 
-class AuthService extends \CSocServAuth
+/**
+ * Class AuthService
+ * @package Yngc0der\Tauth
+ */
+class AuthService extends CSocServAuth
 {
-    const TELEGRAM_WIDGET_LINK = 'https://telegram.org/js/telegram-widget.js?2';
+    const ID = 'Telegram';
+    const WIDGET_URL = 'https://telegram.org/js/telegram-widget.js?9';
+    const CALLBACK_DATA_TTL = 86400;
 
-    private $hash_params = [
-        'id', 'first_name', 'username',
-        'photo_url', 'auth_date', 'hash',
-    ];
+    private static $callbackQueryParams = ['id', 'first_name', 'username', 'photo_url', 'auth_date', 'hash', ];
+
+    /**
+     * @return array
+     */
+    public static function onAuthServicesBuildList()
+    {
+        /** @global \CMain $APPLICATION */
+        global $APPLICATION;
+
+        $APPLICATION->SetAdditionalCSS('/bitrix/js/yngc0der.tauth/css/ss.css');
+
+        return [
+            'ID' => self::ID,
+            'CLASS' => __CLASS__,
+            'NAME' => 'Telegram',
+            'ICON' => 'telegram',
+        ];
+    }
 
     /**
      * @return array
      */
     public function GetSettings()
     {
-        $settings = [
-            [
-                'bot_username',
-                Loc::getMessage('RG_TAUTH_BOT_USERNAME'),
-                '',
-                [
-                    'text',
-                    40
-                ]
-            ],
-            [
-                'bot_token',
-                Loc::getMessage('RG_TAUTH_BOT_TOKEN'),
-                '',
-                [
-                    'text',
-                    40
-                ]
-            ],
-            [
-                'note' => '<a href="https://telegram.org/blog/login" target="_blank">help</a>'
-            ]
+        return [
+            ['bot_username', Loc::getMessage('YC_TAUTH_BOT_USERNAME'), '', ['text', 40, ], ],
+            ['bot_token', Loc::getMessage('YC_TAUTH_BOT_TOKEN'), '', ['text', 40, ], ],
+            ['note' => '<a href="https://telegram.org/blog/login" target="_blank">Help</a>', ],
         ];
-
-        return $settings;
     }
 
     /**
-     * @param $params
+     * @param array $params
      * @return string or array
      */
     public function GetFormHtml($params)
     {
-        $bot_username = self::GetOption('bot_username');
-        $widget_link = self::TELEGRAM_WIDGET_LINK;
-        $auth_url = \CSocServUtil::GetCurUrl('auth_service_id=' . Main::AUTH_SERVICE_ID . '&check_key=' . $_SESSION['UNIQUE_KEY']);
+        $botUsername = self::GetOption('bot_username');
+        $widgetUrl = self::WIDGET_URL;
+        $redirectUrl = CSocServUtil::GetCurUrl(
+            'auth_service_id=' . self::ID . '&check_key=' . $_SESSION['UNIQUE_KEY']
+        );
 
         return <<<HTML
 <script async 
-        src="$widget_link" 
-        data-telegram-login="$bot_username" 
+        src="{$widgetUrl}" 
+        data-telegram-login="{$botUsername}" 
         data-size="medium" 
-        data-auth-url="$auth_url"
-        data-request-access="write">
+        data-auth-url="{$redirectUrl}"
+        data-request-access="write"
+        data-skip-moving="true">
 </script>
 HTML;
     }
 
+    /**
+     * @throws AccessDeniedException
+     * @throws SystemException
+     * @throws \Bitrix\Main\ArgumentException
+     */
     public function Authorize()
     {
-        $GLOBALS['APPLICATION']->RestartBuffer();
-        if (\CSocServAuthManager::CheckUniqueKey()) {
-            try {
-                $auth_data = $this->checkTelegramAuthorization($_GET);
-                self::saveTelegramUserData($auth_data);
-                $arFields = array(
-                    'EXTERNAL_AUTH_ID' => Main::AUTH_SERVICE_ID,
-                    'XML_ID' => $auth_data['id'],
-                    'LOGIN' => $auth_data['username'],
-                    'EMAIL' => '',
-                    'NAME'=> $auth_data['first_name'],
-                    'LAST_NAME'=> '',
-                );
-                if (!empty(SITE_ID)) {
-                    $arFields['SITE_ID'] = SITE_ID;
-                }
-                $bSuccess = $this->AuthorizeUser($arFields);
-            } catch (\Exception $e) {
-                die ($e->getMessage());
+        /** @global \CMain $APPLICATION */
+        global $APPLICATION;
+
+        $APPLICATION->RestartBuffer();
+
+        $authResult = false;
+
+        if (CSocServAuthManager::CheckUniqueKey()) {
+            $request = Context::getCurrent()->getRequest();
+
+            $data = $this->validateCallbackData($request->getQueryList()->getValues());
+
+            $userFields = [
+                'EXTERNAL_AUTH_ID' => self::ID,
+                'XML_ID' => $data['id'],
+                'LOGIN' => $data['username'],
+                'EMAIL' => '',
+                'NAME'=> $data['first_name'],
+                'LAST_NAME'=> '',
+            ];
+
+            if (!empty(Context::getCurrent()->getSite())) {
+                $userFields['SITE_ID'] = Context::getCurrent()->getSite();
             }
+
+            $authResult = $this->AuthorizeUser($userFields);
         }
-        $aRemove = [
-            'logout', 'auth_service_error', 'auth_service_id',
-            'check_key', 'answer_secret', 'name', 'last_name',
-            'email', 'login', 'user_id',
+
+        $removeQueryParams = [
+            'logout',               'auth_service_error',
+            'auth_service_id',      'code',
+            'error_reason',         'error',
+            'error_description',    'check_key',
+            'current_fieldset',
         ];
-        $aRemove = array_merge($aRemove, $this->hash_params);
-        $url = $GLOBALS['APPLICATION']->GetCurPageParam(($bSuccess === true ? '' : 'auth_service_id=' . Main::AUTH_SERVICE_ID . '&auth_service_error=' . $bSuccess), $aRemove);
-        $url = \CUtil::JSEscape($url);
+
+        $uri = (new Web\Uri($APPLICATION->GetCurPageParam()))
+            ->deleteParams(array_merge($removeQueryParams, self::$callbackQueryParams));
+
+        if ($authResult !== true) {
+            $uri->addParams([
+                'auth_service_id' => self::ID,
+                'auth_service_error' => (int) $authResult,
+            ]);
+        }
+
         echo <<<HTML
 <script type="text/javascript">
-	window.location = '$url';
+	window.location = "{$uri->getUri()}";
 </script>
 HTML;
-        die();
+        die;
     }
 
-    private function checkTelegramAuthorization($auth_data)
+    /**
+     * @param array $params
+     * @return string
+     * @throws SystemException
+     */
+    private function getHash(array $params)
     {
-        $bot_token = self::GetOption('bot_token');
-        $check_hash = $auth_data['hash'];
-        unset($auth_data['hash']);
-        $data_check_arr = [];
-        foreach ($auth_data as $key => $value) {
-            if (in_array($key, $this->hash_params)) {
-                $data_check_arr[] = $key . '=' . $value;
+        $botToken = self::GetOption('bot_token');
+
+        if ($botToken === null || $botToken === false) {
+            throw new SystemException('Invalid bot token');
+        }
+
+        $hashParams = [];
+
+        foreach ($params as $param => $value) {
+            if (!in_array($param, self::$callbackQueryParams)) {
+                continue;
             }
-        }
-        sort($data_check_arr);
-        $data_check_string = implode("\n", $data_check_arr);
-        $secret_key = hash('sha256', $bot_token, true);
-        $hash = hash_hmac('sha256', $data_check_string, $secret_key);
-        if (strcmp($hash, $check_hash) !== 0) {
-            throw new \Exception('Data is NOT from Telegram');
-        }
-        if ((time() - $auth_data['auth_date']) > 86400) {
-            throw new \Exception('Data is outdated');
+
+            $hashParams[] = "{$param}={$value}";
         }
 
-        return $auth_data;
+        sort($hashParams);
+
+        $secretKey = hash('sha256', $botToken, true);
+        $hash = hash_hmac('sha256', implode("\n", $hashParams), $secretKey);
+
+        return $hash;
     }
 
-    private function saveTelegramUserData($auth_data)
+    /**
+     * @param array $requestParams
+     * @return array
+     * @throws AccessDeniedException
+     * @throws SystemException
+     */
+    private function validateCallbackData(array $requestParams)
     {
-        $auth_data_json = json_encode($auth_data);
-        setcookie('tg_user', $auth_data_json);
+        $checkHash = $requestParams['hash'];
+        unset($requestParams['hash']);
+
+        $hash = $this->getHash($requestParams);
+
+        if ($hash !== $checkHash) {
+            throw new AccessDeniedException('Invalid data');
+        }
+
+        if (time() - intval($requestParams['auth_date']) > self::CALLBACK_DATA_TTL) {
+            throw new SystemException('Data is outdated');
+        }
+
+        return $requestParams;
     }
 }
