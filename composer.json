@@ -3,22 +3,17 @@
     "type": "bitrix-d7-module",
     "license": "MIT",
     "description": "Telegram authorization module",
-    "extra": {
-        "installer-name": "tauth"
-    },
-    "require": {
-        "php": ">=7.2",
-        "composer/installers": "~1"
-    },
     "authors": [
         {
             "name": "Roman Horbach",
             "email": "rg.archuser@gmail.com"
         }
     ],
-    "scripts": {
-        "post-install-cmd": [
-            "php scripts/install.php"
-        ]
+    "require": {
+        "php": ">=7.2",
+        "composer/installers": "~1"
+    },
+    "extra": {
+        "installer-name": "tauth"
     }
 }
